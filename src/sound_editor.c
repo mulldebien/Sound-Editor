@@ -49,7 +49,8 @@ int main(int argc, char **argv) {
 
     // Change buffer accordingly
     //bit_shift(file_buffer, file_size);
-    invert(file_buffer, file_size);
+    //invert(file_buffer, file_size);
+    reverse(file_buffer, file_size);
 
     // Create new audiofile and write buffer
     FILE *new_audio = fopen("new_file.wav", "wb");
@@ -67,6 +68,7 @@ int main(int argc, char **argv) {
     }
 
     // Cleanup
+    printf("filesize: %lu\n", file_size);
     fclose(audio);
     fclose(new_audio);
     free(file_buffer);
