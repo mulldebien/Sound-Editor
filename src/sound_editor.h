@@ -30,9 +30,10 @@ void invert(uint8_t *buffer, uint64_t buffer_size) {
 
 void reverse(uint8_t *buffer, uint64_t buffer_size) {
     if(buffer == NULL || buffer_size <= WAV_HEADER_LENGTH) return;
-    for(uint64_t i = WAV_HEADER_LENGTH; i < buffer_size; i++) {
+    for(uint64_t i = WAV_HEADER_LENGTH; i < (buffer_size-WAV_HEADER_LENGTH)/2; i++) {
+        uint8_t temp = buffer[i];
         buffer[i] = buffer[buffer_size + WAV_HEADER_LENGTH - i];
-        //buffer[i] ^= 0xF0;
+        buffer[buffer_size + WAV_HEADER_LENGTH - i] = temp;
     }
 }
 
