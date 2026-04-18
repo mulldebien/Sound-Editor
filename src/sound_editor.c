@@ -1,4 +1,9 @@
-#include "sound_editor.h"
+/*
+ * Copyright (c) 2026 Mark Ruccius
+ * Licensed under the MIT License.
+ */
+
+#include "tools.h"
 
 int main(int argc, char **argv) {
     // Check for correct arguments
@@ -21,7 +26,7 @@ int main(int argc, char **argv) {
         fclose(audio);
         return EXIT_FAILURE;
     }
-    uint64_t file_size = ftell(audio);
+    long file_size = ftell(audio);
     if(file_size < 0) {
         fprintf(stderr, "ftell error: %s\n", strerror(errno));
         fclose(audio);
@@ -40,7 +45,7 @@ int main(int argc, char **argv) {
         fclose(audio);
         return EXIT_FAILURE;
     }
-    uint64_t read_bytes = fread(file_buffer, 1, file_size, audio);
+    long read_bytes = fread(file_buffer, 1, file_size, audio);
     if(read_bytes != file_size) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         fclose(audio);
@@ -59,7 +64,7 @@ int main(int argc, char **argv) {
         fclose(audio);
         return EXIT_FAILURE;
     }
-    uint64_t wrote_bytes = fwrite(file_buffer, 1, file_size, new_audio);
+    long wrote_bytes = fwrite(file_buffer, 1, file_size, new_audio);
     if(wrote_bytes != file_size) {
         fprintf(stderr, "fwrite error: %s\n", strerror(errno));
         fclose(audio);

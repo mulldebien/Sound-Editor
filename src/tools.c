@@ -1,13 +1,4 @@
-#ifndef SOUND_EDITOR_H
-#define SOUND_EDITOR_H
-
-#define WAV_HEADER_LENGTH 100
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <stdint.h>
+#include "tools.h"
 
 void print_usage() {
     // TODO: print, how to use the programm
@@ -36,5 +27,3 @@ void reverse(uint8_t *buffer, uint64_t buffer_size) {
         buffer[buffer_size + WAV_HEADER_LENGTH - i] = temp;
     }
 }
-
-#endif
