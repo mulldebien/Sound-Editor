@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Mark Ruccius
+ * Licensed under the MIT License.
+ */
+
 #include "tools.h"
 
 void print_usage() {

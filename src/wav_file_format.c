@@ -1,15 +1,30 @@
+/*
+ * Copyright (c) 2026 Mark Ruccius
+ * Licensed under the MIT License.
+ */
+
 #include "wav_file_format.h"
+
+void print_wav_file(WAV_File *wav_file) {
+    printf("RIFF HEADER.\n");
+    printf("%d, %.4s\n\n", wav_file->riff_header.chunkSize, wav_file->riff_header.riffType);
+    printf("FORMAT HEADER:\n");
+    printf("%d, %d, %d, %d, %d, %d, %d\n\n", wav_file->format_chunk.chunkSize, wav_file->format_chunk.wFormatTag, wav_file->format_chunk.wChannels, wav_file->format_chunk.dwSamplesPerSec, wav_file->format_chunk.dwAvgBytesPerSec, wav_file->format_chunk.wBlockAlign, wav_file->format_chunk.wBitsPerSample);
+    printf("DATA HEADER:\n");
+    printf("%d\n\n", wav_file->data_chunk.chunkSize);
+}
 
 int find_chunk(FILE *file, char find_id[5]) {
     char id[4] = {0};
     if(fread(id, 1, 4, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+        printf("%.4s\n", id);
+        fprintf(stderr, "fread error(id): %s\n", strerror(errno));
         return -1;
     }
     while(strncmp(id, find_id, 4) != 0) {
         // read size
         uint32_t size = 0;
-        if(fread(&size, 4, 1, file) != 4) {
+        if(fread(&size, 4, 1, file) != 1) {
             fprintf(stderr, "fread error: %s\n", strerror(errno));
             return -1;
         }
@@ -36,49 +51,49 @@ WAV_File *parse_data_to_wav(FILE *file, long file_size) {
     }
 
     // Parse RIFF header
-    if(fread(wav_file->riff_header.chunkID, 4, 1, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+    if(find_chunk(file, "RIFF") != 0) {
+        fprintf(stderr, "find_chunk error: RIFF\n");
         return NULL;
     }
-    if(fread(&wav_file->riff_header.chunkSize, 4, 1, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+    if(fread(&wav_file->riff_header.chunkSize, 4, 1, file) != 1) {
+        fprintf(stderr, "fread error(riff_header.chunkSize): %s\n", strerror(errno));
         return NULL;
     }
-    if(fread(wav_file->riff_header.riffType, 4, 1, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+    if(fread(wav_file->riff_header.riffType, 1, 4, file) != 4) {
+        fprintf(stderr, "fread error(riff_header.riffType): %s\n", strerror(errno));
         return NULL;
     }
 
     // Parse format chunk
     if(find_chunk(file, "fmt ") != 0) {
-        fprintf(stderr, "find_chunk error: fmt\n");
+        fprintf(stderr, "find_chunk error: fmt \n");
         return NULL;
     }
-    if(fread(&wav_file->format_chunk.chunkSize, 4, 1, file) != 4) {
+    if(fread(&wav_file->format_chunk.chunkSize, 4, 1, file) != 1) {
+        fprintf(stderr, "fread error(format_chunk.chunkSize): %s\n", strerror(errno));
+        return NULL;
+    }
+    if(fread(&wav_file->format_chunk.wFormatTag, 2, 1, file) != 1) {
+        fprintf(stderr, "fread error(format_chunk.wFormatTag): %s\n", strerror(errno));
+        return NULL;
+    }
+    if(fread(&wav_file->format_chunk.wChannels, 2, 1, file) != 1) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         return NULL;
     }
-    if(fread(&wav_file->format_chunk.wFormatTag, 2, 1, file) != 2) {
+    if(fread(&wav_file->format_chunk.dwSamplesPerSec, 4, 1, file) != 1) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         return NULL;
     }
-    if(fread(&wav_file->format_chunk.wChannels, 2, 1, file) != 2) {
+    if(fread(&wav_file->format_chunk.dwAvgBytesPerSec, 4, 1, file) != 1) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         return NULL;
     }
-    if(fread(&wav_file->format_chunk.dwSamplesPerSec, 4, 1, file) != 4) {
+    if(fread(&wav_file->format_chunk.wBlockAlign, 2, 1, file) != 1) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         return NULL;
     }
-    if(fread(&wav_file->format_chunk.dwAvgBytesPerSec, 4, 1, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
-        return NULL;
-    }
-    if(fread(&wav_file->format_chunk.wBlockAlign, 2, 1, file) != 2) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
-        return NULL;
-    }
-    if(fread(&wav_file->format_chunk.wBitsPerSample, 2, 1, file) != 2) {
+    if(fread(&wav_file->format_chunk.wBitsPerSample, 2, 1, file) != 1) {
         fprintf(stderr, "fread error: %s\n", strerror(errno));
         return NULL;
     }
@@ -88,8 +103,8 @@ WAV_File *parse_data_to_wav(FILE *file, long file_size) {
         fprintf(stderr, "find_chunk error: data\n");
         return NULL;
     }
-    if(fread(&wav_file->data_chunk.chunkSize, 4, 1, file) != 4) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+    if(fread(&wav_file->data_chunk.chunkSize, 4, 1, file) != 1) {
+        fprintf(stderr, "fread error(data_chunk.chunkSize): %s\n", strerror(errno));
         return NULL;
     }
     wav_file->data_chunk.data = malloc(wav_file->data_chunk.chunkSize);
@@ -98,7 +113,7 @@ WAV_File *parse_data_to_wav(FILE *file, long file_size) {
         return NULL;
     }
     if(fread(wav_file->data_chunk.data, 1, wav_file->data_chunk.chunkSize, file) != wav_file->data_chunk.chunkSize) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
+        fprintf(stderr, "fread error(data_chunk.data): %s\n", strerror(errno));
         return NULL;
     }
 

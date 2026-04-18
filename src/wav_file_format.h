@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Mark Ruccius
+ * Licensed under the MIT License.
+ */
+
 #ifndef WAV_FILE_FORMAT_H
 #define WAV_FILE_FORMAT_H
 
@@ -8,7 +13,6 @@
 #include <errno.h>
 
 typedef struct {
-    char chunkID[4];
     uint32_t chunkSize;
     char riffType[4];
 } RIFF_Header;
@@ -33,6 +37,9 @@ typedef struct {
     Format_Chunk format_chunk;
     Data_Chunk data_chunk;
 } WAV_File;
+
+// DEBUGGING
+void print_wav_file(WAV_File *wav_file);
 
 int find_chunk(FILE *file, char id[5]);
 

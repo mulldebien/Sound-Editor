@@ -4,6 +4,7 @@
  */
 
 #include "tools.h"
+#include "wav_file_format.h"
 
 int main(int argc, char **argv) {
     // Check for correct arguments
@@ -51,6 +52,14 @@ int main(int argc, char **argv) {
         fclose(audio);
         return EXIT_FAILURE;
     }
+    if(fseek(audio, 0, SEEK_SET) != 0) {
+        fprintf(stderr, "fseek error: %s\n", strerror(errno));
+        fclose(audio);
+        return EXIT_FAILURE;
+    }
+
+    // Parse file
+    WAV_File *wav_file = parse_data_to_wav(audio, file_size);
 
     // Change buffer accordingly
     //bit_shift(file_buffer, file_size);
@@ -73,7 +82,6 @@ int main(int argc, char **argv) {
     }
 
     // Cleanup
-    printf("filesize: %lu\n", file_size);
     fclose(audio);
     fclose(new_audio);
     free(file_buffer);

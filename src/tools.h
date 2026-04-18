@@ -1,5 +1,10 @@
-#ifndef SOUND_EDITOR_H
-#define SOUND_EDITOR_H
+/*
+ * Copyright (c) 2026 Mark Ruccius
+ * Licensed under the MIT License.
+ */
+
+#ifndef TOOLS_H
+#define TOOLS_H
 
 #define WAV_HEADER_LENGTH 80
 
