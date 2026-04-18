@@ -1,7 +1,7 @@
 #ifndef SOUND_EDITOR_H
 #define SOUND_EDITOR_H
 
-#define WAV_HEADER_LENGTH 100
+#define WAV_HEADER_LENGTH 80
 
 #include <stdio.h>
 #include <stdlib.h>
