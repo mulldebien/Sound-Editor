@@ -8,11 +8,7 @@
 
 #define WAV_HEADER_LENGTH 80
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-#include <stdint.h>
+#include "wav_file_format.h"
 
 void print_usage();
 
@@ -20,6 +16,6 @@ void bit_shift(uint8_t *buffer, uint64_t buffer_size);
 
 void invert(uint8_t *buffer, uint64_t buffer_size);
 
-void reverse(uint8_t *buffer, uint64_t buffer_size);
+void reverse(WAV_File* wav_file);
 
 #endif

@@ -4,7 +4,6 @@
  */
 
 #include "tools.h"
-#include "wav_file_format.h"
 
 int main(int argc, char **argv) {
     // Check for correct arguments
@@ -39,32 +38,19 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    // Create buffer and copy file content into buffer
-    uint8_t *file_buffer = malloc(file_size);
-    if(file_buffer == NULL) {
-        fprintf(stderr, "malloc error: %s\n", strerror(errno));
-        fclose(audio);
-        return EXIT_FAILURE;
-    }
-    long read_bytes = fread(file_buffer, 1, file_size, audio);
-    if(read_bytes != file_size) {
-        fprintf(stderr, "fread error: %s\n", strerror(errno));
-        fclose(audio);
-        return EXIT_FAILURE;
-    }
-    if(fseek(audio, 0, SEEK_SET) != 0) {
-        fprintf(stderr, "fseek error: %s\n", strerror(errno));
-        fclose(audio);
-        return EXIT_FAILURE;
-    }
-
     // Parse file
     WAV_File *wav_file = parse_data_to_wav(audio, file_size);
+    if(wav_file == NULL) {
+        fprintf(stderr, "parse_data_to_wav error\n");
+        fclose(audio);
+        return EXIT_FAILURE;
+    }
+    print_wav_file(wav_file);
 
     // Change buffer accordingly
     //bit_shift(file_buffer, file_size);
     //invert(file_buffer, file_size);
-    reverse(file_buffer, file_size);
+    reverse(wav_file);
 
     // Create new audiofile and write buffer
     FILE *new_audio = fopen("new_file.wav", "wb");
@@ -73,9 +59,8 @@ int main(int argc, char **argv) {
         fclose(audio);
         return EXIT_FAILURE;
     }
-    long wrote_bytes = fwrite(file_buffer, 1, file_size, new_audio);
-    if(wrote_bytes != file_size) {
-        fprintf(stderr, "fwrite error: %s\n", strerror(errno));
+    if(parse_wav_to_data(new_audio, wav_file) == NULL) {
+        fprintf(stderr, "parse_wav_to_data error\n");
         fclose(audio);
         fclose(new_audio);
         return EXIT_FAILURE;
@@ -84,6 +69,5 @@ int main(int argc, char **argv) {
     // Cleanup
     fclose(audio);
     fclose(new_audio);
-    free(file_buffer);
     return EXIT_SUCCESS;
 }

@@ -41,12 +41,14 @@ typedef struct {
 // DEBUGGING
 void print_wav_file(WAV_File *wav_file);
 
+size_t safe_fread(void *__restrict __ptr, size_t __size, size_t __n, FILE *__restrict __stream);
+
 int find_chunk(FILE *file, char id[5]);
 
 WAV_File *parse_data_to_wav(FILE *file, long file_size);
 
 void free_wav_file(WAV_File *file);
 
-//uint8_t *parse_wav_to_data(WAV_File *file);
+FILE *parse_wav_to_data(FILE *file, WAV_File *wav_file);
 
 #endif

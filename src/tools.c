@@ -24,11 +24,12 @@ void invert(uint8_t *buffer, uint64_t buffer_size) {
     }
 }
 
-void reverse(uint8_t *buffer, uint64_t buffer_size) {
-    if(buffer == NULL || buffer_size <= WAV_HEADER_LENGTH) return;
-    for(uint64_t i = WAV_HEADER_LENGTH; i < (buffer_size-WAV_HEADER_LENGTH)/2; i++) {
-        uint8_t temp = buffer[i];
-        buffer[i] = buffer[buffer_size + WAV_HEADER_LENGTH - i];
-        buffer[buffer_size + WAV_HEADER_LENGTH - i] = temp;
+void reverse(WAV_File* wav_file) {
+    uint8_t *temp_ptr = (uint8_t*)wav_file->data_chunk.data;
+    for(uint32_t i = 0; i < wav_file->data_chunk.chunkSize/2; i++) {
+        //swap
+        uint8_t temp = temp_ptr[i];
+        temp_ptr[i] = temp_ptr[wav_file->data_chunk.chunkSize-i];
+        temp_ptr[wav_file->data_chunk.chunkSize] = temp;
     }
 }
