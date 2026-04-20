@@ -1,4 +1,4 @@
-/*
+/** 
  * Copyright (c) 2026 Mark Ruccius
  * Licensed under the MIT License.
  */
@@ -32,28 +32,18 @@ size_t safe_fwrite(const void *__restrict __ptr, size_t __size, size_t __n, FILE
 
 int find_chunk(FILE *file, char find_id[5]) {
     char id[4] = {0};
-    if(fread(id, 1, 4, file) != 4) {
-        printf("%.4s\n", id);
-        fprintf(stderr, "fread error(id): %s\n", strerror(errno));
-        return -1;
-    }
+    if(safe_fread(id, 1, 4, file) != 4) return -1;
     while(strncmp(id, find_id, 4) != 0) {
         // read size
         uint32_t size = 0;
-        if(fread(&size, 4, 1, file) != 1) {
-            fprintf(stderr, "fread error: %s\n", strerror(errno));
-            return -1;
-        }
+        if(safe_fread(&size, 4, 1, file) != 1) return -1;
         // go to end of chunk
         if(fseek(file, size, SEEK_CUR) != 0) {
             fprintf(stderr, "fseek error: %s\n", strerror(errno));
             return -1;
         }
         // read new chunk id
-        if(fread(id, 1, 4, file) != 4) {
-            fprintf(stderr, "fread error: %s\n", strerror(errno));
-            return -1;
-        }
+        if(safe_fread(id, 1, 4, file) != 4) return -1;
     }
     return 0;
 }

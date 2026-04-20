@@ -1,4 +1,4 @@
-/*
+/** 
  * Copyright (c) 2026 Mark Ruccius
  * Licensed under the MIT License.
  */
@@ -38,7 +38,12 @@ typedef struct {
     Data_Chunk data_chunk;
 } WAV_File;
 
-// DEBUGGING
+/**
+ * DEBUGGING FUNCTION:
+ * Print the contents of the struct WAV_File
+ * 
+ * @param wav_file pointer to struct WAV_File
+ */
 void print_wav_file(WAV_File *wav_file);
 
 size_t safe_fread(void *__restrict __ptr, size_t __size, size_t __n, FILE *__restrict __stream);

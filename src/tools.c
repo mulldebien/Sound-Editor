@@ -1,4 +1,4 @@
-/*
+/** 
  * Copyright (c) 2026 Mark Ruccius
  * Licensed under the MIT License.
  */
