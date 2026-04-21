@@ -1,6 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -Werror -Wall -Wextra -Wpedantic 
-#-fsanitize=address -fsanitize=undefined
+CFLAGS = -std=c11 -Werror -Wall -Wextra -Wpedantic -fsanitize=address -fsanitize=undefined
 TARGET = sound_editor
 
 SRC_DIR = src

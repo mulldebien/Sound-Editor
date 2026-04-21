@@ -49,8 +49,12 @@ int main(int argc, char **argv) {
 
     // Change buffer accordingly
     //bit_shift(file_buffer, file_size);
-    //invert(file_buffer, file_size);
-    reverse(wav_file);
+    //invert_bitwise(wav_file);
+    if(reverse(wav_file) != 0) {
+        fprintf(stderr, "reverse error: %s\n", strerror(errno));
+        fclose(audio);
+        return EXIT_FAILURE;
+    }
 
     // Create new audiofile and write buffer
     FILE *new_audio = fopen("new_file.wav", "wb");

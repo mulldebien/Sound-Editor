@@ -14,8 +14,8 @@ void print_usage();
 
 void bit_shift(uint8_t *buffer, uint64_t buffer_size);
 
-void invert(uint8_t *buffer, uint64_t buffer_size);
+int invert_bitwise(WAV_File *wav_file);
 
-void reverse(WAV_File* wav_file);
+int reverse(WAV_File* wav_file);
 
 #endif
